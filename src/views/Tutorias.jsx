@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import TutoriaCard from '../components/TutoriaCard';
+import clasesData from '../data/clases.json'; 
 
 function FilterSearch({ tutorias, onFilter }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   const handleFilterChange = (selectedOptions) => {
     setSelectedOptions(selectedOptions);
-    onFilter(selectedOptions);
+    onFilter(selectedOptions); 
   };
 
   return (
@@ -36,30 +37,33 @@ function getOptionsFromTutorias(tutorias) {
 
 function Tutorias() {
   const [filteredTutorias, setFilteredTutorias] = useState([]);
+  const [tutorias, setTutorias] = useState([]);
+
+  useEffect(() => {
+    setTutorias(clasesData);
+    setFilteredTutorias(clasesData);
+  }, []);
 
   const handleFilter = (selectedOptions) => {
     let filteredData = [...tutorias];
     selectedOptions.forEach(option => {
-      const { value: filterValue, label: filterLabel } = option;
-      filteredData = filteredData.filter(tutoria => tutoria.asignatura === filterValue || tutoria.modalidad === filterValue || tutoria.locacion === filterValue);
+      const { value: filterValue } = option;
+      filteredData = filteredData.filter(tutoria =>
+        tutoria.asignatura === filterValue ||
+        tutoria.modalidad === filterValue ||
+        tutoria.locacion === filterValue
+      );
     });
     setFilteredTutorias(filteredData);
   };
 
-  // Definir tus tutorías aquí
-  const tutorias = [
-    { id: 1, asignatura: 'Matemáticas', modalidad: 'Presencial', locacion: 'Ciudad de México' },
-    { id: 2, asignatura: 'Física', modalidad: 'Virtual', locacion: 'Guadalajara' },
-    // Otras tutorías...
-  ];
-
   return (
-    <div>
-      <h2>Tutorías Disponibles</h2>
+    <div className="container py-2 px-0"> 
+      <h2 className="mb-2">Tutorías Disponibles</h2> 
       <FilterSearch tutorias={tutorias} onFilter={handleFilter} />
-      <div className="row">
+      <div className="row mx-0"> 
         {filteredTutorias.map((tutoria) => (
-          <div key={tutoria.id} className="col-md-4 mb-4">
+          <div key={tutoria.id} className="col-md-4 px-2 mb-2"> 
             <TutoriaCard tutoria={tutoria} />
           </div>
         ))}
@@ -69,4 +73,3 @@ function Tutorias() {
 }
 
 export default Tutorias;
-
